@@ -14,9 +14,9 @@ class AddForeignKeysToEvaluacionCalidadCriterioTable extends Migration {
 	{
 		Schema::table('EvaluacionCalidadCriterio', function(Blueprint $table)
 		{
-			$table->foreign('idCriterio', 'fk_CriterioEvaluacionCalidadCriterio')->references('id')->on('criterio')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idEvaluacionCalidad', 'fk_EvaluacionCalidadEvaluacionCalidadCriterio')->references('id')->on('evaluacioncalidad')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idIndicador', 'fk_IndicadorEvaluacionCalidadCriterio')->references('id')->on('indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idCriterio', 'fk_CriterioEvaluacionCalidadCriterio')->references('id')->on('Criterio')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idEvaluacionCalidad', 'fk_EvaluacionCalidadEvaluacionCalidadCriterio')->references('id')->on('EvaluacionCalidad')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idIndicador', 'fk_IndicadorEvaluacionCalidadCriterio')->references('id')->on('Indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

@@ -14,8 +14,8 @@ class AddForeignKeysToEvaluacionCalidadRegistroTable extends Migration {
 	{
 		Schema::table('EvaluacionCalidadRegistro', function(Blueprint $table)
 		{
-			$table->foreign('idEvaluacionCalidad', 'fk_EvaluacionCalidadEvaluacionCalidadRegistro')->references('id')->on('evaluacioncalidad')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idIndicador', 'fk_IndicadorEvaluacionCalidadRegistro')->references('id')->on('indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idEvaluacionCalidad', 'fk_EvaluacionCalidadEvaluacionCalidadRegistro')->references('id')->on('EvaluacionCalidad')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idIndicador', 'fk_IndicadorEvaluacionCalidadRegistro')->references('id')->on('Indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

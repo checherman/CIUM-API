@@ -14,8 +14,8 @@ class AddForeignKeysToIndicadorAlertaTable extends Migration {
 	{
 		Schema::table('IndicadorAlerta', function(Blueprint $table)
 		{
-			$table->foreign('idAlerta', 'fk_alerta_indicador_alerta')->references('id')->on('alerta')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idIndicador', 'fk_indicador_indicador_alerta')->references('id')->on('indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idAlerta', 'fk_alerta_indicador_alerta')->references('id')->on('Alerta')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idIndicador', 'fk_indicador_indicador_alerta')->references('id')->on('Indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

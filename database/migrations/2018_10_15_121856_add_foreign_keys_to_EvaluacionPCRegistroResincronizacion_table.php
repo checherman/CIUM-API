@@ -14,7 +14,7 @@ class AddForeignKeysToEvaluacionPCRegistroResincronizacionTable extends Migratio
 	{
 		Schema::table('EvaluacionPCRegistroResincronizacion', function(Blueprint $table)
 		{
-			$table->foreign('idEvaluacionPC', 'fk_EvaluacionPCRegistro_EvaluacionPC')->references('id')->on('evaluacionpcresincronizacion')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idEvaluacionPC', 'fk_EvaluacionPCRegistro_EvaluacionPC')->references('id')->on('EvaluacionPCResincronizacion')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

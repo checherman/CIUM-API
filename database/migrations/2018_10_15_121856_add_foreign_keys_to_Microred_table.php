@@ -14,8 +14,8 @@ class AddForeignKeysToMicroredTable extends Migration {
 	{
 		Schema::table('Microred', function(Blueprint $table)
 		{
-			$table->foreign('clues', 'fk_Microred_Clues1')->references('clues')->on('clues')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('id_mesored', 'fk_Microred_Mesored1')->references('id')->on('mesored')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('clues', 'fk_Microred_Clues1')->references('clues')->on('Clues')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('id_mesored', 'fk_Microred_Mesored1')->references('id')->on('Mesored')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

@@ -14,8 +14,8 @@ class AddForeignKeysToCriterioValidacionRespuestaTable extends Migration {
 	{
 		Schema::table('CriterioValidacionRespuesta', function(Blueprint $table)
 		{
-			$table->foreign('idCriterio', 'fk_criterio_criterio_validacion_respuesta')->references('id')->on('criterio')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idCriterioValidacion', 'fk_criterio_validacion_criterio_validacion_respuesta')->references('id')->on('criteriovalidacion')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idCriterio', 'fk_criterio_criterio_validacion_respuesta')->references('id')->on('Criterio')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idCriterioValidacion', 'fk_criterio_validacion_criterio_validacion_respuesta')->references('id')->on('Criteriovalidacion')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

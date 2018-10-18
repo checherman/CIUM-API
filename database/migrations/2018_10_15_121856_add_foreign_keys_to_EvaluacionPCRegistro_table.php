@@ -14,8 +14,8 @@ class AddForeignKeysToEvaluacionPCRegistroTable extends Migration {
 	{
 		Schema::table('EvaluacionPCRegistro', function(Blueprint $table)
 		{
-			$table->foreign('idEvaluacionPC', 'fk_EvaluacionPCEvaluacionPCRegistro')->references('id')->on('evaluacionpc')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idIndicador', 'fk_IndicadorEvaluacionPCRegsitro')->references('id')->on('indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idEvaluacionPC', 'fk_EvaluacionPCEvaluacionPCRegistro')->references('id')->on('EvaluacionPC')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idIndicador', 'fk_IndicadorEvaluacionPCRegsitro')->references('id')->on('Indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

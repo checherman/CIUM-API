@@ -14,7 +14,7 @@ class AddForeignKeysToIndicadorValidacionTable extends Migration {
 	{
 		Schema::table('IndicadorValidacion', function(Blueprint $table)
 		{
-			$table->foreign('idIndicador', 'fk_indicador_indicador_validacion')->references('id')->on('indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idIndicador', 'fk_indicador_indicador_validacion')->references('id')->on('Indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

@@ -14,8 +14,8 @@ class AddForeignKeysToEvaluacionRecursoRegistroTable extends Migration {
 	{
 		Schema::table('EvaluacionRecursoRegistro', function(Blueprint $table)
 		{
-			$table->foreign('idEvaluacionRecurso', 'fk_EvaluacionRecursoEvaluacionRecursoRegistro')->references('id')->on('evaluacionrecurso')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idIndicador', 'fk_IndicadorEvaluacionRecursoRegsitro')->references('id')->on('indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idEvaluacionRecurso', 'fk_EvaluacionRecursoEvaluacionRecursoRegistro')->references('id')->on('EvaluacionRecurso')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idIndicador', 'fk_IndicadorEvaluacionRecursoRegsitro')->references('id')->on('Indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

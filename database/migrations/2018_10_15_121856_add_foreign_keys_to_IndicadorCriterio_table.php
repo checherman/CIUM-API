@@ -14,9 +14,9 @@ class AddForeignKeysToIndicadorCriterioTable extends Migration {
 	{
 		Schema::table('IndicadorCriterio', function(Blueprint $table)
 		{
-			$table->foreign('idCriterio', 'fk_criterio_indicador_criterio')->references('id')->on('criterio')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idIndicador', 'fk_indicador_indicador_criterio')->references('id')->on('indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idLugarVerificacion', 'fk_lugar_verificacion_indicador_criterio')->references('id')->on('lugarverificacion')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idCriterio', 'fk_criterio_indicador_criterio')->references('id')->on('Criterio')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idIndicador', 'fk_indicador_indicador_criterio')->references('id')->on('Indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idLugarVerificacion', 'fk_lugar_verificacion_indicador_criterio')->references('id')->on('LugarVerificacion')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

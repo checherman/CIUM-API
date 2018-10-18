@@ -14,7 +14,7 @@ class AddForeignKeysToZonaCluesTable extends Migration {
 	{
 		Schema::table('ZonaClues', function(Blueprint $table)
 		{
-			$table->foreign('idZona', 'fk_zona_zona_clues')->references('id')->on('zona')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idZona', 'fk_zona_zona_clues')->references('id')->on('Zona')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

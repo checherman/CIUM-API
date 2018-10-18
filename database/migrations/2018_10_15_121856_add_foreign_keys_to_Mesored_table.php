@@ -14,7 +14,7 @@ class AddForeignKeysToMesoredTable extends Migration {
 	{
 		Schema::table('Mesored', function(Blueprint $table)
 		{
-			$table->foreign('id_macrored', 'fk_Mesored_Macrored1')->references('id')->on('macrored')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('id_macrored', 'fk_Mesored_Macrored1')->references('id')->on('Macrored')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

@@ -14,7 +14,7 @@ class AddForeignKeysToConeCluesTable extends Migration {
 	{
 		Schema::table('ConeClues', function(Blueprint $table)
 		{
-			$table->foreign('clues', 'fk_ConeClues_Clues1')->references('clues')->on('clues')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('clues', 'fk_ConeClues_Clues1')->references('clues')->on('Clues')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 			$table->foreign('idCone', 'fk_ConeClues_Cone1')->references('id')->on('Cone')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}

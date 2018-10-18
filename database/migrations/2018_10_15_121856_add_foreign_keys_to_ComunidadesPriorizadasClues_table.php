@@ -14,7 +14,7 @@ class AddForeignKeysToComunidadesPriorizadasCluesTable extends Migration {
 	{
 		Schema::table('ComunidadesPriorizadasClues', function(Blueprint $table)
 		{
-			$table->foreign('clues', 'fk_ComunidadesPriorizadasClues_Clues1')->references('clues')->on('clues')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('clues', 'fk_ComunidadesPriorizadasClues_Clues1')->references('clues')->on('Clues')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 			$table->foreign('idComunidadesPriorizadas', 'fk_ComunidadesPriorizadasClues_ComunidadesPriorizadas1')->references('id')->on('ComunidadesPriorizadas')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}

@@ -14,9 +14,9 @@ class AddForeignKeysToEvaluacionRecursoCriterioTable extends Migration {
 	{
 		Schema::table('EvaluacionRecursoCriterio', function(Blueprint $table)
 		{
-			$table->foreign('idCriterio', 'fk_CriterioEvaluacionRecursoCriterio')->references('id')->on('criterio')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idEvaluacionRecurso', 'fk_EvaluacionRecursoEvaluacionRecursoCriterio')->references('id')->on('evaluacionrecurso')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idIndicador', 'fk_IndicadorEvaluacionRecursoCriterio')->references('id')->on('indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idCriterio', 'fk_CriterioEvaluacionRecursoCriterio')->references('id')->on('Criterio')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idEvaluacionRecurso', 'fk_EvaluacionRecursoEvaluacionRecursoCriterio')->references('id')->on('EvaluacionRecurso')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idIndicador', 'fk_IndicadorEvaluacionRecursoCriterio')->references('id')->on('Indicador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 
