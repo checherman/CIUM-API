@@ -14,7 +14,7 @@ class AddForeignKeysToConeIndicadorCriterioTable extends Migration {
 	{
 		Schema::table('ConeIndicadorCriterio', function(Blueprint $table)
 		{
-			$table->foreign('idIndicadorCriterio', 'fk_indicador_criterio_cone_indicador_criterio')->references('id')->on('indicadorcriterio')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idIndicadorCriterio', 'fk_indicador_criterio_cone_indicador_criterio')->references('id')->on('IndicadorCriterio')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 
