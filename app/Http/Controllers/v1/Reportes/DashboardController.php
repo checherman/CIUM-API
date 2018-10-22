@@ -57,7 +57,7 @@ class DashboardController extends Controller
 		$dimen = "indicador";
 		$campos = "";
 		
-		if($tipo == "Recurso"){
+		if($tipo == "Recurso" || $tipo == "PC"){
 			$promedio = "(sum(aprobado) / sum(total)   * 100)";
 		}
 		else{
@@ -129,7 +129,7 @@ class DashboardController extends Controller
 		$data=[]; $temp = "";
 		for($i=0;$i<count($serie);$i++)
 		{
-			if($tipo == "Recurso")
+			if($tipo == "Recurso" || $tipo == "PC")
 			{
 				$sql = "select ReporteRecurso.id,indicador,total,fechaEvaluacion,dia,mes,anio,day,month,semana,clues,ReporteRecurso.nombre,cone,
 					(select count(noAprobado) from ReporteRecurso where indicador = '$serie[$i]' and noAprobado = 0) as cumple,
@@ -249,7 +249,7 @@ class DashboardController extends Controller
 		}
 
 		$suma_ = "";
-		if($tipo == "Recurso"){
+		if($tipo == "Recurso" || $tipo == "PC"){
 			$promedio = "(sum(aprobado) / sum(total)   * 100)";
 			$suma_ = "sum(total) as total";
 		}
@@ -318,7 +318,7 @@ class DashboardController extends Controller
 			$sql0 .= "(noAprobado > 0 or aprobado = 0)";
 		}
 
-		if($tipo == "Recurso")
+		if($tipo == "Recurso" || $tipo == "PC")
 		{
 			$sql0 .= "noAprobado = 0";
 		}
@@ -494,7 +494,7 @@ class DashboardController extends Controller
 		$dimen = "indicador";
 		$campos = "";
 		
-		if($tipo == "Recurso"){
+		if($tipo == "Recurso" || $tipo == "PC"){
 			$promedio = "(sum(aprobado) / sum(total)   * 100)";
 		}
 		else{
@@ -541,7 +541,7 @@ class DashboardController extends Controller
 
 			if($crear){
 				$sql_new ="CREATE TABLE Temp$tipo AS (";
-				if($tipo == "Recurso"){
+				if($tipo == "Recurso" || $tipo == "PC"){
 					$sql_new .= "SELECT distinct i.id AS id,e.id AS evaluacion,i.color AS color,i.codigo AS codigo,
 					i.nombre AS indicador, cr.nombre as criterio, cr.id as idCriterio, ec.aprobado,
 					e.fechaEvaluacion AS 
@@ -732,7 +732,7 @@ class DashboardController extends Controller
 				$criterioCalidad["criterios"] = $criterios;
 			}
 		}
-		if($tipo == "Recurso")
+		if($tipo == "Recurso" || $tipo == "PC")
 		{
 			$hallazgo = DB::table('EvaluacionRecurso  AS AS');
 			

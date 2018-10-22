@@ -42,15 +42,6 @@ class DashboardPCController extends Controller
 	 */
 	public function indicadorPC()
 	{
-		/**
-		 * @var json $filtro contiene el json de los parametros
-		 * @var string $datos recibe todos los parametros
-		 * @var string $cluesUsuario contiene las clues por permiso del usuario
-		 * @var string $parametro contiene los filtros procesados en query
-		 * @var string $nivel muestra el dato de la etiqueta en el grafico
-		 */
-		DB::statement("SET lc_time_names = 'es_MX'");
-
 		$datos = Request::all();
 		$filtro = array_key_exists("filtro",$datos) ? json_decode($datos["filtro"]) : null; 		
 		$cluesUsuario=$this->getZona($filtro);
@@ -60,112 +51,96 @@ class DashboardPCController extends Controller
 		$parametro .= $valor[0];
 		$nivel = $valor[1];
 		
-		// validar la forma de visualizar el grafico por tiempo o por parametros
-		if($filtro->visualizar == "tiempo")
-			$nivel = "month";
-		else 
-		{
-			if(array_key_exists("nivel",$filtro->um))
-			{
-				$nivel = $filtro->um->nivel;
-				if($nivel == "clues")
-				{
-					$codigo = is_array($filtro->clues) ? implode("','",$filtro->clues) : $filtro->clues;
-					if(is_array($filtro->clues))
-						if(count($filtro->clues)>0)
-							$cluesUsuario = "'".$codigo."'";					
-				}
-			}
-		}
+		// todos los indicadores que tengan al menos una evaluación		
+		$indicadores = DB::select("select id, color, codigo, nombre from Indicador where categoria='RECURSO' order by codigo");
 		
-		// obtener las etiquetas del nivel de desglose
-		$indicadores = array();
-		$nivelD = DB::select("select distinct $nivel from ReportePC where clues in ($cluesUsuario) $parametro order by anio,mes");
-		$nivelDesglose=[];		
-	
-		for($x=0;$x<count($nivelD);$x++)
-		{
-			$a=$nivelD[$x]->$nivel;
-			array_push($nivelDesglose,$a);
-		}
-		// todos los indicadores que tengan al menos una evaluación
-		$indicadores = DB::select("select distinct color,codigo,indicador, 'PC' as categoriaEvaluacion from ReportePC where clues in ($cluesUsuario) $parametro order by codigo");
-		$serie=[]; $colorInd=[];
+		$info = [];
+		$data = [];
+		$datos = [];
+		$tamanio = 0;
 		foreach($indicadores as $item)
 		{
-			array_push($serie,$item->indicador);
-			array_push($colorInd,$item->color);
-		}
-		
-		$color = "";
-		$a = "";
-		// recorrer los indicadores para obtener sus valores con respecto al filtrado		
-		for($i=0;$i<count($serie);$i++)
-		{
-			$datos[$i] = [];
-			$c=0;$porcentaje=0; $temp = "";
-			for($x=0;$x<count($nivelD);$x++)
-			{
-				$a=$nivelD[$x]->$nivel;				
-				$data["datasets"][$i]["label"]=$serie[$i];
-				$sql = "select ReportePC.id,indicador,total,(((aprobado+noAplica)/total)*100) as porcentaje, 
-				fechaEvaluacion,dia,mes,anio,day,month,semana,clues,ReportePC.nombre,cone from ReportePC 
-				where $nivel = '$a' and indicador = '$serie[$i]' $parametro";
-				
-				$reporte = DB::select($sql);
-				
-				if($temp!=$a)
-				{
-					$c=0;$porcentaje=0;
-				}
-				$indicador=0;
-				// conseguir el color de las alertas
-				if($reporte)
-				{
-					foreach($reporte as $r)
-					{
-						$porcentaje=$porcentaje+$r->porcentaje;
-						$indicador=$r->id;
-						$c++;
-					}
-					$temp = $a;
-					$porcentaje = number_format($porcentaje/$c, 2, ".", ",");
-					$resultColor=DB::select("select a.color from IndicadorAlerta ia 
-					LEFT JOIN Alerta a on a.id=ia.idAlerta 
-					where idIndicador=$indicador and ($porcentaje) between minimo and maximo");
+			$valores = [];
 
-					if($resultColor)
-						$color = $resultColor[0]->color;
-					else 
-						$color = "rgb(150,150,150)";
-					array_push($datos[$i],$porcentaje);													
-				}
-				else array_push($datos[$i],0);
-				// array para el empaquetado de los datos y poder pintar con la libreria js-chart en angular
+			$sql = "select id, evaluacion, indicador, codigo, color, 
+				(sum(aprobado) / sum(total) * 100) as porcentaje, 
+				DATE_FORMAT(fechaEvaluacion, '%Y-%m-%d') as fecha, mes, anio, clues, nombre, jurisdiccion, municipio,
+				cone from ReportePC 
+				where id = '$item->id' $parametro 
+				group by indicador, anio, mes";
+							
+			$reporte = DB::select($sql);
+			if($tamanio < count($reporte)){
+				$tamanio = count($reporte);
+			}
+			foreach ($reporte as $key => $value) {	
+				$color = DB::select("select a.color from Indicador i 
+					LEFT JOIN IndicadorAlerta ia on ia.idIndicador = i.id
+					LEFT JOIN Alerta a on a.id = ia.idAlerta 
+					where i.codigo = '$value->codigo' and ($value->porcentaje) between minimo and maximo");
+					if($color)
+						$value->color_porcentaje = $color[0]->color;
 				
-				$data["datasets"][$i]["backgroundColor"]=$colorInd[$i];
-				$data["datasets"][$i]["borderColor"]=$color;
-				$data["datasets"][$i]["borderWidth"]=0;
-				$data["datasets"][$i]["hoverBackgroundColor"]=$colorInd[$i];
-				$data["datasets"][$i]["hoverBorderColor"]=$color;
-				$data["datasets"][$i]["data"]=$datos[$i];
-			}	
+				if($value->mes < 10)
+					$value->mes ='0'.$value->mes;
+
+				$time = new \DateTime($value->anio.'-'.$value->mes.'-01', new \DateTimeZone('America/Mexico_City'));
+				array_push($valores, array(
+					"x" => $time->getTimestamp() * 1000,  // Fecha en milisegundos
+					"y" => ($value->porcentaje) * 1,      // Valor del porcentaje
+					"fecha" => $value->fecha              // fecha del evento opcional 
+				));
+				if(!isset($datos[$item->id])){
+					$datos[$item->id] = [];
+				}
+				array_push($datos[$item->id], $value);
+			}
+			array_push($info, array(
+				"values" => $valores,
+				"key" => "(".$item->codigo.") ".$item->nombre,
+				"color" => $item->color
+			));
 		}
-		$data["labels"]=$nivelDesglose;
-		if(!$data)
+		if(!$info)
 		{
 			return Response::json(array("status"=> 404,"messages"=>"No hay resultados"), 200);
 		} 
 		else 
 		{
+			// ajustar el tamaño de longitud de cada indicadror para que sean uniformes
+			foreach ($info as $key => $value) {
+				if(count($value["values"])){
+					$temp = 0; $valores = $value["values"];
+					$time = $value["values"][count($value["values"]) - 1]["x"];
+					if(count($value["values"]) < $tamanio){
+						$temp = $tamanio - count($value["values"]);
+						// si algun indicador no tiene evaluaciones rellenar con 0 y valor -1
+						for($i = 0; $i < $temp; $i++){
+							
+							array_push($valores, array(
+								"x" => $time,  
+								"y" => -1,      		
+								"fecha" => "N/A"               
+							));
+						}
+					}
+
+					array_push($data, array(
+						"values" => $valores,
+						"key" => $value["key"],
+						"color" => $value["color"]
+					));
+				}
+			}
 			return Response::json(array("status" => 200, "messages"=>"Operación realizada con exito", 
 			"data" => $data, 
+			"datos" => $datos,
 			"total" => count($data)),200);			
 		}
 	}
 	
 	/**
-	 * Devuelve las dimensiones para los filtros de las opciones de PC.
+	 * Devuelve las dimensiones para los filtros de las opciones de recurso.
 	 *
 	 * <Ul>Filtro avanzado
 	 * <Li> <code>$filtro</code> json con los datos del filtro avanzado</ li>
@@ -219,113 +194,7 @@ class DashboardPCController extends Controller
 	}
 	
 	/**
-	 * Devuelve el listado de evaluaciones de una unidad médica para el ultimo nivel del gráfico de PCs.
-	 *
-	 * <h4>Request</h4>
-	 * Request json $clues Clues de la unidad médica
-	 * <Ul>Filtro avanzado
-	 * <Li> <code>$filtro</code> json con los datos del filtro avanzado</ li>
-	 * </Ul>
-	 *		    
-	 * @return Response 
-	 * <code style = "color:green"> Respuesta Ok json(array("status": 200, "messages": "Operación realizada con exito", "data": array(resultado)),status) </code>
-	 * <code> Respuesta Error json(array("status": 404, "messages": "No hay resultados"),status) </code>
-	 */
-	public function indicadorPCClues()
-	{
-		$datos = Request::all();
-		$clues = $datos["clues"];
-		$filtro = array_key_exists("filtro",$datos) ? json_decode($datos["filtro"]) : null;
-		$cluesUsuario=$this->getZona($filtro);
-		
-		$parametro = $this->getTiempo($filtro);				
-			
-		$sql = "select distinct codigo,indicador,color from ReportePC where clues='$clues' and clues in ($cluesUsuario) $parametro order by codigo";
-		$indicadores = DB::select($sql);
-		$cols=[];$serie=[]; $colorInd=[];
-		foreach($indicadores as $item)
-		{
-			array_push($serie,$item->indicador);
-			array_push($colorInd,$item->color);
-		}
-		$sql = "select distinct evaluacion from ReportePC where clues='$clues' and clues in ($cluesUsuario) $parametro";
-		
-		$nivelD = DB::select($sql);
-		$nivelDesglose=[];
-		$color = "rgb(150,150,150)";
-		
-		for($x=0;$x<count($nivelD);$x++)
-		{
-			$a=$nivelD[$x]->evaluacion;
-			array_push($nivelDesglose,"Evaluación #".$a);
-		}
-				
-		for($i=0;$i<count($serie);$i++)
-		{
-			$datos[$i] = [];
-			$c=0;$porcentaje=0; $temp = "";
-			for($x=0;$x<count($nivelD);$x++)
-			{
-				$a=$nivelD[$x]->evaluacion;
-				$data["datasets"][$i]["label"]=$serie[$i];
-				$sql = "select ReportePC.id,indicador,total,(((aprobado+noAplica)/total)*100) as porcentaje, 
-				fechaEvaluacion,dia,mes,anio,day,month,semana,clues,ReportePC.nombre,cone from ReportePC 
-				where clues='$clues' and indicador = '$serie[$i]' $parametro";
-								
-				$reporte = DB::select($sql);
-					
-				if($temp!=$a) //if($temp!=$serie[$i])
-				{
-					$c=0;$porcentaje=0;
-				}
-				$indicador=0;
-				if($reporte)
-				{
-					foreach($reporte as $r)
-					{
-						$porcentaje=$porcentaje+$r->porcentaje;
-						$indicador=$r->id;
-						$c++;
-					}
-					$temp = $a;
-					$porcentaje = number_format($porcentaje/$c, 2, '.', ',');
-					$resultColor=DB::select("select a.color from IndicadorAlerta ia 
-					LEFT JOIN Alerta a on a.id=ia.idAlerta 
-					where idIndicador=$indicador and ($porcentaje) between minimo and maximo");
-
-					if($resultColor)
-						$color = $resultColor[0]->color;
-					else 
-						$color = "rgb(150,150,150)";
-
-					array_push($datos[$i],$porcentaje);													
-				}
-				else array_push($datos[$i],0);							
-
-				$data["datasets"][$i]["backgroundColor"]=$colorInd[$i];
-				$data["datasets"][$i]["borderColor"]=$color;
-				$data["datasets"][$i]["borderWidth"]=0;
-				$data["datasets"][$i]["hoverBackgroundColor"]=$colorInd[$i];
-				$data["datasets"][$i]["hoverBorderColor"]=$color;
-				$data["datasets"][$i]["data"]=$datos[$i];
-			}
-		}
-		$data["labels"]=$nivelDesglose;
-		if(!$data)
-		{
-			return Response::json(array('status'=> 404,"messages"=>'No hay resultados'), 200);
-		} 
-		else 
-		{
-			return Response::json(array("status" => 200, "messages"=>"Operación realizada con exito", 
-			"data" => $data, 
-			"total" => count($data)),200);
-			
-		}
-	}
-	
-	/**
-	 * Devuelve TOP de las evaluaciones de PC.
+	 * Devuelve TOP de las evaluaciones de recurso.
 	 *
 	 * <Ul>Filtro avanzado
 	 * <Li> <code>$filtro</code> json con los datos del filtro avanzado</ li>
