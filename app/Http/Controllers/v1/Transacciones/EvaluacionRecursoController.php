@@ -234,7 +234,7 @@ class EvaluacionRecursoController extends Controller
 					->where("clues", $item->clues)->first();
 					
 					if(!$existe_fecha){
-						$clues = DB::table('Clues')->select('Clues.*', 'Cone.nombre AS cone')
+						$clues = DB::table('Clues')->select('Clues.*', 'co.nombre AS cone')
 						->leftJoin('ConeClues AS cc', 'cc.clues', '=', 'Clues.clues')
 						->leftJoin('Cone AS co', 'co.id', '=', 'cc.idCone')
 						->where('Clues.clues', $item->clues)->first();
@@ -392,7 +392,7 @@ class EvaluacionRecursoController extends Controller
 				
 				if(!$existe_fecha){
 
-					$clues = DB::table('Clues')->select('Clues.*', 'Cone.nombre AS cone')
+					$clues = DB::table('Clues')->select('Clues.*', 'co.nombre AS cone')
 						->leftJoin('ConeClues AS cc', 'cc.clues', '=', 'Clues.clues')
 						->leftJoin('Cone AS co', 'co.id', '=', 'cc.idCone')
 						->where('Clues.clues', $datos->clues)->first();
@@ -540,7 +540,7 @@ class EvaluacionRecursoController extends Controller
 						$item->idUsuario=$usuario->id;
 					$usuario = Usuario::where('id', $item->idUsuario)->first();
 
-					$clues = DB::table('Clues')->select('Clues.*', 'Cone.nombre AS cone')
+					$clues = DB::table('Clues')->select('Clues.*', 'co.nombre AS cone')
 						->leftJoin('ConeClues AS cc', 'cc.clues', '=', 'Clues.clues')
 						->leftJoin('Cone AS co', 'co.id', '=', 'cc.idCone')
 						->where('Clues.clues', $item->clues)->first();
@@ -709,7 +709,7 @@ class EvaluacionRecursoController extends Controller
 				if(!array_key_exists("idUsuario",$datos))
 					$datos->idUsuario=$usuario->id;
 
-				$clues = DB::table('Clues')->select('Clues.*', 'Cone.nombre AS cone')
+				$clues = DB::table('Clues')->select('Clues.*', 'co.nombre AS cone')
 						->leftJoin('ConeClues AS cc', 'cc.clues', '=', 'Clues.clues')
 						->leftJoin('Cone AS co', 'co.id', '=', 'cc.idCone')
 						->where('Clues.clues', $datos->clues)->first();

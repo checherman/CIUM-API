@@ -230,7 +230,7 @@ class EvaluacionCalidadController extends Controller
 					
 					if(!$existe_fecha){
 
-						$clues = DB::table('Clues')->select('Clues.*', 'Cone.nombre AS cone')
+						$clues = DB::table('Clues')->select('Clues.*', 'co.nombre AS cone')
 						->leftJoin('ConeClues AS cc', 'cc.clues', '=', 'Clues.clues')
 						->leftJoin('Cone AS co', 'co.id', '=', 'cc.idCone')
 						->where('Clues.clues', $item->clues)->first();
@@ -408,14 +408,14 @@ class EvaluacionCalidadController extends Controller
 				
 				if(!$existe_fecha){
 
-					$clues = DB::table('Clues')->select('Clues.*', 'Cone.nombre AS cone')
+					$clues = DB::table('Clues')->select('Clues.*', 'co.nombre AS cone')
 						->leftJoin('ConeClues AS cc', 'cc.clues', '=', 'Clues.clues')
 						->leftJoin('Cone AS co', 'co.id', '=', 'cc.idCone')
 						->where('Clues.clues', $datos->clues)->first();
 
 					$evaluacion = new EvaluacionCalidad;
 					$evaluacion->clues = $datos->clues;
-
+					
 					$evaluacion->cluesNombre = $clues->nombre;
 					$evaluacion->jurisdiccion = $clues->jurisdiccion;
 					$evaluacion->cone = $clues->cone;
@@ -555,7 +555,7 @@ class EvaluacionCalidadController extends Controller
 						$item->idUsuario=$usuario->id;
 					$usuario = Usuario::where('id', $item->idUsuario)->first();
 
-					$clues = DB::table('Clues')->select('Clues.*', 'Cone.nombre AS cone')
+					$clues = DB::table('Clues')->select('Clues.*', 'co.nombre AS cone')
 						->leftJoin('ConeClues AS cc', 'cc.clues', '=', 'Clues.clues')
 						->leftJoin('Cone AS co', 'co.id', '=', 'cc.idCone')
 						->where('Clues.clues', $item->clues)->first();
@@ -748,7 +748,7 @@ class EvaluacionCalidadController extends Controller
 				if(!array_key_exists("fechaEvaluacion",$datos))
 					$datos->fechaEvaluacion=$date->format('Y-m-d H:i:s');
 
-				$clues = DB::table('Clues')->select('Clues.*', 'Cone.nombre AS cone')
+				$clues = DB::table('Clues')->select('Clues.*', 'co.nombre AS cone')
 						->leftJoin('ConeClues AS cc', 'cc.clues', '=', 'Clues.clues')
 						->leftJoin('Cone AS co', 'co.id', '=', 'cc.idCone')
 						->where('Clues.clues', $datos->clues)->first();
